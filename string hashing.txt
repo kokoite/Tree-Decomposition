@@ -1,0 +1,184 @@
+// soon or later i will be expert 
+#include"bits/stdc++.h"
+using namespace std;
+typedef long long ll;
+const ll INF = 1e18;
+const ll NINF = -INF;
+const int mod = 1e9+7;
+const int inf  = 1e5;
+const int ninf = -inf;
+#define pb push_back
+#define rep(i,a,b) for(i=a;i<b;i++)
+#define vi vector<int>
+#define all(a) a.begin(),a.end()
+#define pii pair<int,int>
+#define pll pair<ll,ll>
+#define mems(a) memset(a,0,sizeof a) 
+#define vll vector<ll>
+#define vpll vector<pll>
+#define vpii vector<pii>
+#define nline cout<<"\n"
+#define sz(a) a.size()
+#define ln(a) a.length()
+#define rev(a) reverse(all(a))
+#define debug cout<<"All is well"<<endl
+#define debugPrime cout<<"HeHeHeHe"<<endl
+#define vvl vector<vll>
+#define vvi vector<vi>
+#define vvpi vector<vpii>
+#define vvpil vector<vpll>
+#define ret return
+#define for1(i,n) for(i=1;i<=n;i++)
+#define for0(i,n) for(i=0;i<n;i++)
+// ARSENAL START
+bool isPrime(int x)
+{
+    for(int i=2;i<=sqrt(x);i++)
+    {
+        if(x%i ==0 )
+            return false;
+    }
+    return true;
+}
+ll pow(ll a, ll b,ll mod)
+{
+    if(b == 0)
+        return 1;
+    if(b == 1)
+        return a;
+    ll res = pow(a,b/2,mod);
+    if(b&1)
+    {
+        return (res%mod*(res%mod*a%mod)%mod)%mod;
+    }
+    else
+    {
+        return (res%mod*res%mod)%mod;
+    }
+}
+ll modInverse(ll n,ll mod)
+{
+    return pow(n,mod-2,mod)%mod;
+}
+ll nCr(ll n,ll r,ll mod)
+{
+    ll fact[n+1] ;
+    fact[1] =1;
+    for(ll i=2;i<=n;i++)
+    {
+        fact[i]= (fact[i-1]%mod*i%mod)%mod;
+    }
+    return (fact[n]%mod * (modInverse(fact[r],mod)%mod * modInverse(fact[n-r],mod)%mod) % mod)% mod;
+}
+vi sieve(int n)
+{
+    vi primes;
+    bool visited[n+1];
+    memset(visited,0,sizeof visited);
+    int i,j;
+    for(i=2;i*i<=n;i++)
+    {
+        if(visited[i])
+            continue;
+        for(j=2*i;j<=n;j+=i)
+        {
+            visited[j] = true;
+        }
+    }
+    for(i=2;i<=n;i++)
+    {
+        if(!visited[i])
+            primes.pb(i);
+    }
+    return primes;
+}
+/*
+    Look at this   
+    Brute Force
+    Binary Search
+    Prefix suffix
+    Segment Tree
+    String Hashing
+    Fenwick Tree
+    Dynamic Programming
+    Binary Lifting
+    Dp with prefix sums
+    Dp with fenwick tree
+    BitMasking Dp
+    Digit Dp
+    Recursion 
+ */
+#define hash asiofbucbz
+const int N = 1e6 + 1;
+const int P = 29;
+int  pow1[N],inverse[N];
+int mul(int a,int b,int mod)
+{
+    a%=mod;
+    b%=mod;
+    return (a*1LL*b)%mod;
+}
+int add(int a,int b,int mod)
+{
+    a%=mod;
+    b%=mod;
+    return (0LL + a + b + mod)%mod;
+}
+void preCalc(string s,int hash[])
+{
+    // hash[i] hash till index i 
+    int i,j;
+    int n = ln(s);
+    for(i=1;i<=n;i++)
+    {
+        hash[i] = add(hash[i-1],mul(pow1[i],(s[i-1]-'a'+1),mod),mod);
+    }
+}
+int getValue(int i,int j,int hash[])
+{
+    int  val = add(hash[j],-hash[i-1],mod);
+    int  ans = mul(val,inverse[i],mod);
+    return ans;
+}
+void solve()
+{
+    string s,p;
+    cin>>s>>p;
+    int n = ln(s),m = ln(p);
+    int  hash1[n+1],hash2[m+1],i;
+    mems(hash1),mems(hash2);
+    pow1[0]=1;
+    int elm = pow(P,mod-2,mod);
+    for(i=1;i<=n;i++)
+    {
+        pow1[i] = mul(pow1[i-1],P,mod);
+        inverse[i] = pow(P,mod-i,mod);
+    }
+    
+    preCalc(s,hash1);
+    preCalc(p,hash2);
+    int count =0;
+    if(hash1[m] == hash2[m])
+    {
+        count++;
+    }
+    for(i=2;i<=n;i++)
+    {
+        int val = getValue(i,i+m-1,hash1);
+        if(val == hash2[m])
+            count++;
+    }
+    cout<<count<<endl;
+}  
+int main()
+{ 
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(0);
+    int t=1;
+    // cin>>t;  
+    while(t--)
+    {
+        solve();
+    }
+}
